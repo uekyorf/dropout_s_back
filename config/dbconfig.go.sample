@@ -1,0 +1,17 @@
+package config
+
+// DBConfig データベースへの接続情報
+type DBConfig struct {
+	User   string
+	Pass   string
+	DBName string
+}
+
+// GetDBConfig データベースへの接続情報を返す
+func GetDBConfig() DBConfig {
+	config := DBConfig{}
+	config.User = "your username"
+	config.Pass = "your password"
+	config.DBName = "your DBname"
+	return config
+}
