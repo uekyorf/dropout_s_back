@@ -1,3 +1,5 @@
+dropout_s_back
+dbconfig.go
 # Binaries for programs and plugins
 *.exe
 *.exe~
