@@ -16,9 +16,9 @@ type User struct {
 	gorm.Model
 	Name        string
 	Password    string
-	Message     Message     // Messageテーブルのforeign keyとする
-	SendMessage SendMessage // SendMessageテーブルのforeign keyとする
-	Device      Device      // Deviceテーブルのforeign keyとする
+	Message     []Message     // Messageテーブルのforeign keyとする
+	SendMessage []SendMessage // SendMessageテーブルのforeign keyとする
+	Device      []Device      // Deviceテーブルのforeign keyとする
 }
 
 // Device Deviceテーブル
@@ -36,7 +36,7 @@ type Message struct {
 	Body        string
 	BleID       uint
 	Due         time.Time
-	SendMessage SendMessage // SendMessageテーブルのforeign keyとする
+	SendMessage []SendMessage // SendMessageテーブルのforeign keyとする
 }
 
 //Ble BLEテーブル
@@ -44,7 +44,7 @@ type Ble struct {
 	gorm.Model
 	Name     string
 	AreaName string
-	Message  Message // Messageテーブルのforeign keyとする
+	Message  []Message // Messageテーブルのforeign keyとする
 }
 
 // SendMessage Send_messageテーブル
