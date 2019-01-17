@@ -15,7 +15,6 @@ type Model struct {
 type User struct {
 	gorm.Model
 	Name        string
-	Password    string
 	Message     []Message     // Messageテーブルのforeign keyとする
 	SendMessage []SendMessage // SendMessageテーブルのforeign keyとする
 	Device      []Device      // Deviceテーブルのforeign keyとする
