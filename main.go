@@ -1,7 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"dropout_s_back/db"
+)
 
 func main() {
-	fmt.Println("Hello, World")
+	db.Init()            // DB接続初期化
+	conn := db.GetConn() // DB接続取得
+	defer conn.Close()
 }
