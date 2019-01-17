@@ -3,3 +3,4 @@
 ## packages
 * GORM
 * mysql driver
+* gin
