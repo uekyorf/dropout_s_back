@@ -14,7 +14,7 @@ type Model struct {
 // User Userテーブル
 type User struct {
 	gorm.Model
-	Name        string
+	Name        string        `gorm:"not null"`
 	Message     []Message     // Messageテーブルのforeign keyとする
 	SendMessage []SendMessage // SendMessageテーブルのforeign keyとする
 	Device      []Device      // Deviceテーブルのforeign keyとする
@@ -23,17 +23,17 @@ type User struct {
 // Device Deviceテーブル
 type Device struct {
 	gorm.Model
-	Name   string
-	UserID uint
+	Name   string `gorm:"not null"`
+	UserID uint   `gorm:"not null"`
 }
 
 //Message Messageテーブル
 type Message struct {
 	gorm.Model
-	UserID      uint
-	Title       string
-	Body        string
-	BleID       uint
+	UserID      uint   `gorm:"not null"`
+	Title       string `gorm:"not null"`
+	Body        string `gorm:"not null"`
+	BleID       uint   `gorm:"not null"`
 	Due         time.Time
 	SendMessage []SendMessage // SendMessageテーブルのforeign keyとする
 }
@@ -41,14 +41,14 @@ type Message struct {
 //Ble BLEテーブル
 type Ble struct {
 	gorm.Model
-	Name     string
-	AreaName string
+	Name     string    `gorm:"not null"`
+	AreaName string    `gorm:"not null"`
 	Message  []Message // Messageテーブルのforeign keyとする
 }
 
 // SendMessage Send_messageテーブル
 type SendMessage struct {
 	gorm.Model
-	UserID    uint
-	MessageID uint
+	UserID    uint `gorm:"not null"`
+	MessageID uint `gorm:"not null"`
 }
