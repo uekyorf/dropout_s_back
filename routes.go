@@ -1,4 +1,4 @@
-package config
+package main
 
 import (
 	"dropout_s_back/controller"
