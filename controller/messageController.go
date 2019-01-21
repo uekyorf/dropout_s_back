@@ -15,7 +15,7 @@ func (ctrler Controller) GetMessage(c *gin.Context) {
 }
 
 // PostRequestの構造体
-type PostRequestJson struct {
+type RequestMessagePost struct {
 	Device_name string   `json:"device_name"`
 	Title       string   `json:"title"`
 	Body        string   `json:"body"`
@@ -30,7 +30,7 @@ func (ctrler Controller) PostMessage(c *gin.Context) {
 	dbConn := ctrler.conn
 
 	// リクエストをバインド
-	req := PostRequestJson{}
+	req := RequestMessagePost{}
 	err := c.BindJSON(&req)
 
 	// requestがjsonとして正しい構造であるか否か
