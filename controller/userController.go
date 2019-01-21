@@ -18,13 +18,15 @@ func (ctrler Controller) SignUp(c *gin.Context) {
 	dbConn := ctrler.conn //DB接続
 	req := RequestSignUp{}
 	err := c.BindJSON(&req)
+
+	// requestがjsonとして正しい構造であるか否か
 	if err != nil {
 		response := CreateResponse(400, "bad request", nil)
 		c.JSON(http.StatusOK, response)
 		return
 	}
 
-	// requestが正常か否か
+	// requestが条件を満たしているか否か
 	if req.Device == "" || req.Name == "" {
 		response := CreateResponse(400, "bad request", nil)
 		c.JSON(http.StatusOK, response)
