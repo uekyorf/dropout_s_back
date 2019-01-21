@@ -33,11 +33,11 @@ func (ctrler Controller) PostMessage(c *gin.Context) {
 	c.BindJSON(&req)
 	// リクエストの内容を基にSELECT
 	device := db.Device{}
-	dbConn.First(&device, "name=?", req.Device_name)
+	dbConn.Where("name=?", req.Device_name).First(&device)
 	user := db.User{}
 	dbConn.First(&user, device.UserID)
 	ble := db.Ble{}
-	dbConn.First(&ble, "name=?", req.Ble_uuid)
+	dbConn.Where("name=?", req.Ble_uuid).First(&ble)
 	// messageを作成し、INSERT
 	message := db.Message{}
 	message.UserID = user.ID
