@@ -9,7 +9,7 @@ import (
 
 // GetMessage 要求(User,BLE)に基づいてメッセージを返却する
 func (ctrler Controller) GetMessage(c *gin.Context) {
-	//db := ctrler.conn //DB接続
+	//db := ctrler.dbdbConn //DB接続
 
 }
 
@@ -26,18 +26,18 @@ type PostRequestJson struct {
 // PostMessage 要求に基づいてメッセージをデータベースに登録する
 func (ctrler Controller) PostMessage(c *gin.Context) {
 	//DB接続
-	conn := ctrler.conn
+	dbConn := ctrler.conn
 
 	// リクエストをバインド
 	req := PostRequestJson{}
 	c.BindJSON(&req)
 	// リクエストの内容を基にSELECT
 	device := db.Device{}
-	conn.First(&device, "name=?", req.Device_name)
+	dbConn.First(&device, "name=?", req.Device_name)
 	user := db.User{}
-	conn.First(&user, device.UserID)
+	dbConn.First(&user, device.UserID)
 	ble := db.Ble{}
-	conn.First(&ble, "name=?", req.Ble_uuid)
+	dbConn.First(&ble, "name=?", req.Ble_uuid)
 	// messageを作成し、INSERT
 	message := db.Message{}
 	message.UserID = user.ID
@@ -50,6 +50,6 @@ func (ctrler Controller) PostMessage(c *gin.Context) {
 	}
 	message.Due, _ = time.Parse("2006-01-02-15-04-05 MST", req.Due+"-00 JST")
 	message.Due = message.Due.AddDate(0, 1, 0)
-	conn.Create(&message)
+	dbConn.Create(&message)
 
 }
