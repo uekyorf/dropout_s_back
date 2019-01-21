@@ -2,6 +2,7 @@ package controller
 
 import (
 	"dropout_s_back/db"
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -30,15 +31,43 @@ func (ctrler Controller) PostMessage(c *gin.Context) {
 
 	// リクエストをバインド
 	req := PostRequestJson{}
-	c.BindJSON(&req)
+	err := c.BindJSON(&req)
+
+	// requestがjsonとして正しい構造であるか否か
+	if err != nil {
+		response := CreateResponse(400, "bad request", nil)
+		c.JSON(http.StatusOK, response)
+		return
+	}
+
+	// requestが条件を満たしているか否か
+	if req.Device_name == "" || req.Title == "" || req.Body == "" || req.Ble_uuid == "" || len(req.To_user) == 0 {
+		response := CreateResponse(400, "bad request", nil)
+		c.JSON(http.StatusOK, response)
+		return
+	}
+
 	// リクエストの内容を基にSELECT
 	device := db.Device{}
-	dbConn.Where("name=?", req.Device_name).First(&device)
+	if dbConn.Where("name=?", req.Device_name).First(&device).RecordNotFound() {
+		response := CreateResponse(404, "device is not found", nil)
+		c.JSON(http.StatusOK, response)
+		return
+	}
 	user := db.User{}
-	dbConn.First(&user, device.UserID)
+	if dbConn.First(&user, device.UserID).RecordNotFound() {
+		response := CreateResponse(404, "A user using the device is not found", nil)
+		c.JSON(http.StatusOK, response)
+		return
+	}
 	ble := db.Ble{}
-	dbConn.Where("name=?", req.Ble_uuid).First(&ble)
-	// messageを作成し、INSERT
+	if dbConn.Where("name=?", req.Ble_uuid).First(&ble).RecordNotFound() {
+		response := CreateResponse(404, "BLE is not found", nil)
+		c.JSON(http.StatusOK, response)
+		return
+	}
+
+	// messageをINSERT
 	message := db.Message{}
 	message.UserID = user.ID
 	message.Title = req.Title
