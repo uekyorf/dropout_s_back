@@ -27,7 +27,6 @@ type PostRequestJson struct {
 func (ctrler Controller) PostMessage(c *gin.Context) {
 	//DB接続
 	conn := ctrler.conn
-	defer conn.Close()
 
 	// リクエストをバインド
 	req := PostRequestJson{}
@@ -52,6 +51,5 @@ func (ctrler Controller) PostMessage(c *gin.Context) {
 	message.Due, _ = time.Parse("2006-01-02-15-04-05 MST", req.Due+"-00 JST")
 	message.Due = message.Due.AddDate(0, 1, 0)
 	conn.Create(&message)
-
 
 }
