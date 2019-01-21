@@ -2,6 +2,7 @@ package main
 
 import (
 	"dropout_s_back/db"
+	"dropout_s_back/route"
 )
 
 func main() {
@@ -9,6 +10,6 @@ func main() {
 	conn := db.GetConn() // DB接続取得
 	defer conn.Close()
 
-	r := Init(conn) // routes初期化
+	r := route.Init(conn) // routes初期化
 	r.Run(":3000")  // サーバ起動
 }
