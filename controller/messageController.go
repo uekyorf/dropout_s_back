@@ -95,4 +95,6 @@ func (ctrler Controller) PostMessage(c *gin.Context) {
 		sendMessage.UserID = toUser.ID
 		dbConn.Create(&sendMessage)
 	}
+	response := CreateResponse(200, "Submitted message", nil)
+	c.JSON(http.StatusOK, response)
 }
