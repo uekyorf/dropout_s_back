@@ -17,17 +17,27 @@ type ResponseBles struct {
 func (ctrler Controller) GetBle(c *gin.Context) {
 	dbConn := ctrler.conn //DB接続
 
-	response := []ResponseBles{}
+	result := []ResponseBles{}
 	var bles []db.Ble
+	var count int
 
-	dbConn.Find(&bles)
+	// BLEリスト作成
+	dbConn.Find(&bles).Count(&count)
 	for _, ble := range bles {
 		name := ble.Name
 		areaName := ble.AreaName
 		responseBle := ResponseBles{Name: name, AreaName: areaName}
 
-		response = append(response, responseBle)
+		result = append(result, responseBle)
 	}
 
+	// BLEが一つも登録されていない時
+	if count == 0 {
+		response := CreateResponse(404, "ble not found", nil)
+		c.JSON(http.StatusOK, response)
+		return
+	}
+
+	response := CreateResponse(200, "request completed", result)
 	c.JSON(http.StatusOK, response)
 }
