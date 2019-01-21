@@ -74,11 +74,10 @@ func (ctrler Controller) PostMessage(c *gin.Context) {
 	message.Body = req.Body
 	message.BleID = ble.ID
 	if req.Due == "" {
-		t := time.Now()
+		t := time.Now().AddDate(0, 1, 0)
 		req.Due = t.Format("2006-01-02-15-04")
 	}
 	message.Due, _ = time.Parse("2006-01-02-15-04-05 MST", req.Due+"-00 JST")
-	message.Due = message.Due.AddDate(0, 1, 0)
 	dbConn.Create(&message)
 
 	// sendMessageをINSERT
