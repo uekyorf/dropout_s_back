@@ -13,7 +13,11 @@ func Init(conn *gorm.DB) *gin.Engine {
 
 	ctrler := controller.NewController(conn)
 
-	api := r.Group("/api")
+	accounts := gin.Accounts{
+		"admin": "password",
+	}
+	authorized := r.Group("/", gin.BasicAuth(accounts))
+	api := authorized.Group("/api")
 	{
 		api.GET("/ble/get", ctrler.GetBle)
 		api.GET("/message/get", ctrler.GetMessage)
