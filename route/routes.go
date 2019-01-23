@@ -1,6 +1,7 @@
 package route
 
 import (
+	"dropout_s_back/config"
 	"dropout_s_back/controller"
 
 	"github.com/gin-gonic/gin"
@@ -13,7 +14,14 @@ func Init(conn *gorm.DB) *gin.Engine {
 
 	ctrler := controller.NewController(conn)
 
-	api := r.Group("/api")
+	// BasicAuthの設定
+	ba := config.GetBAConfig()
+	accounts := gin.Accounts{
+		ba.User: ba.Pass,
+	}
+	authorized := r.Group("/", gin.BasicAuth(accounts))
+
+	api := authorized.Group("/api")
 	{
 		api.GET("/ble/get", ctrler.GetBle)
 		api.GET("/message/get", ctrler.GetMessage)
