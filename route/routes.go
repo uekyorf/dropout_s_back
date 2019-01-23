@@ -19,6 +19,7 @@ func Init(conn *gorm.DB) *gin.Engine {
 		api.GET("/message/get", ctrler.GetMessage)
 		api.POST("/user/signup", ctrler.SignUp)
 		api.POST("/message/post", ctrler.PostMessage)
+		api.GET("/user/get", ctrler.GetUsers)
 	}
 
 	return r

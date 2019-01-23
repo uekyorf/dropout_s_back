@@ -52,3 +52,8 @@ func (ctrler Controller) SignUp(c *gin.Context) {
 	response := CreateResponse(200, "user created", nil)
 	c.JSON(http.StatusOK, response)
 }
+
+// GetUsers ユーザ検索API
+func (ctrler Controller) GetUsers(c *gin.Context) {
+
+}
