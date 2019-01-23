@@ -42,7 +42,7 @@ func (ctrler Controller) PostMessage(c *gin.Context) {
 	}
 
 	// requestが条件を満たしているか否か
-	if req.Device_name == "" || req.Title == "" || req.Body == "" || req.Ble_uuid == "" || len(req.To_user) == 0 {
+	if req.Device_name == "" || req.Title == "" || req.Body == "" || req.Ble_uuid == "" || (len(req.To_user) == 0 && req.To_all_users == false) {
 		response := CreateResponse(400, "bad request", nil)
 		c.JSON(http.StatusOK, response)
 		return
@@ -68,10 +68,14 @@ func (ctrler Controller) PostMessage(c *gin.Context) {
 		return
 	}
 	toUser := []db.User{}
-	if dbConn.Where("name in (?)", req.To_user).Find(&toUser).RecordNotFound() {
-		response := CreateResponse(404, "to user is not found", nil)
-		c.JSON(http.StatusOK, response)
-		return
+	if req.To_all_users == true {
+		dbConn.Find(&toUser)
+	} else {
+		if dbConn.Where("name in (?)", req.To_user).Find(&toUser).RecordNotFound() {
+			response := CreateResponse(404, "to user is not found", nil)
+			c.JSON(http.StatusOK, response)
+			return
+		}
 	}
 
 	// messageをINSERT
@@ -88,7 +92,7 @@ func (ctrler Controller) PostMessage(c *gin.Context) {
 	dbConn.Create(&message)
 
 	// sendMessageをINSERT
-	for key, _ := range req.To_user {
+	for key, _ := range toUser {
 		sendMessage := db.SendMessage{}
 		sendMessage.MessageID = message.ID
 		sendMessage.UserID = toUser[key].ID
