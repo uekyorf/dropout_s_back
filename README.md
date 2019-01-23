@@ -1,5 +1,6 @@
 # dropout_s_back
 * Hack U 参加作品のバックエンド/サーバサイド
+* フロントエンド→https://github.com/NISHI3/dropout_s_front
 ## 環境
 * Golang
   * GORM
