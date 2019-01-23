@@ -88,7 +88,12 @@ func (ctrler Controller) PostMessage(c *gin.Context) {
 		t := time.Now().AddDate(0, 1, 0)
 		req.Due = t.Format("2006-01-02-15-04")
 	}
-	message.Due, _ = time.Parse("2006-01-02-15-04-05 MST", req.Due+"-00 JST")
+	message.Due, err = time.Parse("2006-01-02-15-04-05 MST", req.Due+"-00 JST")
+	if err != nil {
+		response := CreateResponse(400, "bad request", nil)
+		c.JSON(http.StatusOK, response)
+		return
+	}
 	dbConn.Create(&message)
 
 	// sendMessageをINSERT
