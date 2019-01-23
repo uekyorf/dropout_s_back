@@ -66,6 +66,12 @@ func (ctrler Controller) PostMessage(c *gin.Context) {
 		c.JSON(http.StatusOK, response)
 		return
 	}
+	toUser := []db.User{}
+	if dbConn.Where("name in (?)", req.To_user).Find(&toUser).RecordNotFound() {
+		response := CreateResponse(404, "to user is not found", nil)
+		c.JSON(http.StatusOK, response)
+		return
+	}
 
 	// messageをINSERT
 	message := db.Message{}
@@ -81,17 +87,10 @@ func (ctrler Controller) PostMessage(c *gin.Context) {
 	dbConn.Create(&message)
 
 	// sendMessageをINSERT
-	for _, value := range req.To_user {
-		toUser := db.User{}
-		if dbConn.Where("name=?", value).First(&toUser).RecordNotFound() {
-			response := CreateResponse(404, "Recipient is not found", nil)
-			c.JSON(http.StatusOK, response)
-			return
-		}
-
+	for key, _ := range req.To_user {
 		sendMessage := db.SendMessage{}
 		sendMessage.MessageID = message.ID
-		sendMessage.UserID = toUser.ID
+		sendMessage.UserID = toUser[key].ID
 		dbConn.Create(&sendMessage)
 	}
 	response := CreateResponse(200, "Submitted message", nil)
