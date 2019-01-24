@@ -73,6 +73,18 @@ func (ctrler Controller) GetMessage(c *gin.Context) {
 		return
 	}
 
+	responseMessages := []ResponseMessageGet{}
+	tmpMessage := ResponseMessageGet{}
+	for _, message := range messages {
+		tmpMessage.Title = message.Title
+		tmpMessage.Body = message.Body
+		tmpMessage.CreatedAt = message.CreatedAt
+		tmpMessage.UserID = message.UserID
+		responseMessages = append(responseMessages, tmpMessage)
+	}
+	response := CreateResponse(200, "Message is found", responseMessages)
+	c.JSON(http.StatusOK, response)
+
 }
 
 // PostRequestの構造体
