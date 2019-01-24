@@ -73,6 +73,10 @@ func (ctrler Controller) GetMessage(c *gin.Context) {
 		return
 	}
 
+	// messagesのIDの配列を作成
+	// send_messagesテーブルDELETEするのに使う
+	messageIDs := []uint{}
+
 	responseMessages := []ResponseMessageGet{}
 	tmpMessage := ResponseMessageGet{}
 	for _, message := range messages {
@@ -81,10 +85,13 @@ func (ctrler Controller) GetMessage(c *gin.Context) {
 		tmpMessage.CreatedAt = message.CreatedAt
 		tmpMessage.UserID = message.UserID
 		responseMessages = append(responseMessages, tmpMessage)
+		messageIDs = append(messageIDs, message.ID)
 	}
 	response := CreateResponse(200, "Message is found", responseMessages)
 	c.JSON(http.StatusOK, response)
 
+	// send_messagesのレコードを削除
+	dbConn.Where("user_id=?", user.ID).Where("message_id in (?)", messageIDs).Delete(&sendMessages)
 }
 
 // PostRequestの構造体
