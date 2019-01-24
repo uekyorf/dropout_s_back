@@ -16,6 +16,8 @@ type ResponseBles struct {
 // GetBle データベースにあるBLEの一覧を返す
 func (ctrler Controller) GetBle(c *gin.Context) {
 	dbConn := ctrler.conn //DB接続
+	ctrler.mux.Lock()
+	defer ctrler.mux.Unlock()
 
 	result := []ResponseBles{}
 	var bles []db.Ble
