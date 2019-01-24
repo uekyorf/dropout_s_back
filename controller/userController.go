@@ -20,6 +20,9 @@ type RequestGetUsers struct {
 // SignUp 要求に基づいてユーザを作成する
 func (ctrler Controller) SignUp(c *gin.Context) {
 	dbConn := ctrler.conn //DB接続
+
+	ctrler.mux.Lock()
+	defer ctrler.mux.Unlock()
 	req := RequestSignUp{}
 	err := c.BindJSON(&req)
 
@@ -60,6 +63,9 @@ func (ctrler Controller) SignUp(c *gin.Context) {
 // GetUsers ユーザ検索API
 func (ctrler Controller) GetUsers(c *gin.Context) {
 	dbConn := ctrler.conn //DB接続
+
+	ctrler.mux.Lock()
+	defer ctrler.mux.Unlock()
 	req := RequestGetUsers{}
 	err := c.ShouldBind(&req)
 

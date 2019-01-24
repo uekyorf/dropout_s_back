@@ -22,6 +22,9 @@ type ResponseMessageGet struct {
 // GetMessage 要求(User,BLE)に基づいてメッセージを返却する
 func (ctrler Controller) GetMessage(c *gin.Context) {
 	dbConn := ctrler.conn //DB接続
+
+	ctrler.mux.Lock()
+	defer ctrler.mux.Unlock()
 	req := RequestMessageGet{}
 	err := c.ShouldBind(&req)
 
@@ -111,6 +114,9 @@ type RequestMessagePost struct {
 func (ctrler Controller) PostMessage(c *gin.Context) {
 	//DB接続
 	dbConn := ctrler.conn
+
+	ctrler.mux.Lock()
+	defer ctrler.mux.Unlock()
 
 	// リクエストをバインド
 	req := RequestMessagePost{}
