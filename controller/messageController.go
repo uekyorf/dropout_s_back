@@ -21,7 +21,23 @@ type ResponseMessageGet struct {
 
 // GetMessage 要求(User,BLE)に基づいてメッセージを返却する
 func (ctrler Controller) GetMessage(c *gin.Context) {
-	//db := ctrler.dbdbConn //DB接続
+	dbConn := ctrler.conn //DB接続
+	req := RequestMessageGet{}
+	err := c.ShouldBind(&req)
+
+	// requestが正しい構造であるか
+	if err != nil {
+		response := CreateResponse(400, "bad request", nil)
+		c.JSON(http.StatusOK, response)
+		return
+	}
+
+	// requestが条件を満たしているか
+	if req.Ble_uuid == "" || req.User_name == "" {
+		response := CreateResponse(400, "bad request", nil)
+		c.JSON(http.StatusOK, response)
+		return
+	}
 
 }
 
