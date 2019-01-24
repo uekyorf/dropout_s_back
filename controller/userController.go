@@ -23,6 +23,8 @@ func (ctrler Controller) SignUp(c *gin.Context) {
 
 	ctrler.mux.Lock()
 	defer ctrler.mux.Unlock()
+	c.Header("Access-Control-Allow-Origin", "*")
+
 	req := RequestSignUp{}
 	err := c.BindJSON(&req)
 
@@ -66,6 +68,8 @@ func (ctrler Controller) GetUsers(c *gin.Context) {
 
 	ctrler.mux.Lock()
 	defer ctrler.mux.Unlock()
+	c.Header("Access-Control-Allow-Origin", "*")
+
 	req := RequestGetUsers{}
 	err := c.ShouldBind(&req)
 

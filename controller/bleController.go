@@ -18,6 +18,7 @@ func (ctrler Controller) GetBle(c *gin.Context) {
 	dbConn := ctrler.conn //DB接続
 	ctrler.mux.Lock()
 	defer ctrler.mux.Unlock()
+	c.Header("Access-Control-Allow-Origin", "*")
 
 	result := []ResponseBles{}
 	var bles []db.Ble

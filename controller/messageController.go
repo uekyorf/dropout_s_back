@@ -25,6 +25,8 @@ func (ctrler Controller) GetMessage(c *gin.Context) {
 
 	ctrler.mux.Lock()
 	defer ctrler.mux.Unlock()
+	c.Header("Access-Control-Allow-Origin", "*")
+
 	req := RequestMessageGet{}
 	err := c.ShouldBind(&req)
 
@@ -117,6 +119,7 @@ func (ctrler Controller) PostMessage(c *gin.Context) {
 
 	ctrler.mux.Lock()
 	defer ctrler.mux.Unlock()
+	c.Header("Access-Control-Allow-Origin", "*")
 
 	// リクエストをバインド
 	req := RequestMessagePost{}
