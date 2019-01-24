@@ -41,6 +41,6 @@ go run main.go
 ### メッセージ投稿
 * https://github.com/EIMIKI/dropout_s_back/pull/22
 ### メッセージ取得
-* coming soon
+* https://github.com/EIMIKI/dropout_s_back/pull/30
 ### BLE取得
 * https://github.com/EIMIKI/dropout_s_back/pull/15
