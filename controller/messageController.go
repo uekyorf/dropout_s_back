@@ -12,6 +12,12 @@ type RequestMessageGet struct {
 	Ble_uuid  string `form:"ble_uuid"`
 	User_name string `form:"user_name"`
 }
+type ResponseMessageGet struct {
+	Title     string    `json:"title"`
+	Body      string    `json:"body"`
+	CreatedAt time.Time `json:"created_at"`
+	UserID    uint      `json:"user_id"`
+}
 
 // GetMessage 要求(User,BLE)に基づいてメッセージを返却する
 func (ctrler Controller) GetMessage(c *gin.Context) {
