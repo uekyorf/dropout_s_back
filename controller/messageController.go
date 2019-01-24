@@ -8,10 +8,92 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type RequestMessageGet struct {
+	Ble_uuid  string `form:"ble_uuid"`
+	User_name string `form:"user_name"`
+}
+type ResponseMessageGet struct {
+	Title     string    `json:"title"`
+	Body      string    `json:"body"`
+	CreatedAt time.Time `json:"created_at"`
+	UserID    uint      `json:"user_id"`
+}
+
 // GetMessage 要求(User,BLE)に基づいてメッセージを返却する
 func (ctrler Controller) GetMessage(c *gin.Context) {
-	//db := ctrler.dbdbConn //DB接続
+	dbConn := ctrler.conn //DB接続
+	req := RequestMessageGet{}
+	err := c.ShouldBind(&req)
 
+	// requestが正しい構造であるか
+	if err != nil {
+		response := CreateResponse(400, "bad request", nil)
+		c.JSON(http.StatusOK, response)
+		return
+	}
+
+	// requestが条件を満たしているか
+	if req.Ble_uuid == "" || req.User_name == "" {
+		response := CreateResponse(400, "bad request", nil)
+		c.JSON(http.StatusOK, response)
+		return
+	}
+
+	// リクエストの内容を基にSELECT
+	ble := db.Ble{}
+	if dbConn.Where("name = ?", req.Ble_uuid).First(&ble).RecordNotFound() {
+		response := CreateResponse(404, "BLE is not found", nil)
+		c.JSON(http.StatusOK, response)
+		return
+	}
+	user := db.User{}
+	if dbConn.Where("name = ?", req.User_name).First(&user).RecordNotFound() {
+		response := CreateResponse(404, "Your name is not found", nil)
+		c.JSON(http.StatusOK, response)
+		return
+	}
+	// send_messagesテーブルからuser_idが一致するレコードをSELECT
+	sendMessages := []db.SendMessage{}
+	dbConn.Where("user_id = ?", user.ID).Find(&sendMessages)
+	if len(sendMessages) == 0 {
+		response := CreateResponse(404, "Messages to you are not found", nil)
+		c.JSON(http.StatusOK, response)
+		return
+	}
+	// sendMessagesのMessageIDの配列を作成
+	// messageテーブルからSELECTするのに使う
+	sendMessagesMessageIDs := []uint{}
+	for _, sendMessage := range sendMessages {
+		sendMessagesMessageIDs = append(sendMessagesMessageIDs, sendMessage.MessageID)
+	}
+	// messagesテーブルからsendMessagesMessageIDs, ble.IDの一致するレコードをSELECT
+	messages := []db.Message{}
+	dbConn.Where("ble_id = ?", ble.ID).Find(&messages, sendMessagesMessageIDs)
+	if len(messages) == 0 {
+		response := CreateResponse(404, "Message to you with the BLE is not found", nil)
+		c.JSON(http.StatusOK, response)
+		return
+	}
+
+	// messagesのIDの配列を作成
+	// send_messagesテーブルDELETEするのに使う
+	messageIDs := []uint{}
+
+	responseMessages := []ResponseMessageGet{}
+	tmpMessage := ResponseMessageGet{}
+	for _, message := range messages {
+		tmpMessage.Title = message.Title
+		tmpMessage.Body = message.Body
+		tmpMessage.CreatedAt = message.CreatedAt
+		tmpMessage.UserID = message.UserID
+		responseMessages = append(responseMessages, tmpMessage)
+		messageIDs = append(messageIDs, message.ID)
+	}
+	response := CreateResponse(200, "Message is found", responseMessages)
+	c.JSON(http.StatusOK, response)
+
+	// send_messagesのレコードを削除
+	dbConn.Where("user_id=?", user.ID).Where("message_id in (?)", messageIDs).Delete(&sendMessages)
 }
 
 // PostRequestの構造体
