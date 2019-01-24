@@ -8,6 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type RequestMessageGet struct {
+	Ble_uuid  string `form:"ble_uuid"`
+	User_name string `form:"user_name"`
+}
+
 // GetMessage 要求(User,BLE)に基づいてメッセージを返却する
 func (ctrler Controller) GetMessage(c *gin.Context) {
 	//db := ctrler.dbdbConn //DB接続
