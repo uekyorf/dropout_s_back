@@ -6,7 +6,7 @@
   * GORM
   * Gin
   * mysql
-  
+
 ## 実行
 ### データベースの設定
 * データベース作成
@@ -42,5 +42,5 @@ go run main.go
 * https://github.com/EIMIKI/dropout_s_back/pull/22
 ### メッセージ取得
 * https://github.com/EIMIKI/dropout_s_back/pull/30
-### BLE取得
+### 全BLE取得
 * https://github.com/EIMIKI/dropout_s_back/pull/15

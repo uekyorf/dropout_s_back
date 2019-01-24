@@ -13,8 +13,8 @@ type ResponseBles struct {
 	AreaName string `json:"area_name"`
 }
 
-// GetBle データベースにあるBLEの一覧を返す
-func (ctrler Controller) GetBle(c *gin.Context) {
+// GetBleAll データベースにあるBLEの一覧を返す
+func (ctrler Controller) GetBleAll(c *gin.Context) {
 	dbConn := ctrler.conn //DB接続
 	ctrler.mux.Lock()
 	defer ctrler.mux.Unlock()

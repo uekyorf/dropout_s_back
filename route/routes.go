@@ -24,6 +24,7 @@ func Init(conn *gorm.DB) *gin.Engine {
 	api := authorized.Group("/api")
 	{
 		api.GET("/ble/get", ctrler.GetBle)
+		api.GET("/ble/getall", ctrler.GetBleAll)
 		api.GET("/message/get", ctrler.GetMessage)
 		api.POST("/user/signup", ctrler.SignUp)
 		api.POST("/message/post", ctrler.PostMessage)
