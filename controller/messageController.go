@@ -41,20 +41,21 @@ func (ctrler Controller) GetMessage(c *gin.Context) {
 
 	// リクエストの内容を基にSELECT
 	ble := db.Ble{}
-	if dbConn.Where("name=?", req.Ble_uuid).First(&ble).RecordNotFound() {
+	if dbConn.Where("name = ?", req.Ble_uuid).First(&ble).RecordNotFound() {
 		response := CreateResponse(404, "BLE is not found", nil)
 		c.JSON(http.StatusOK, response)
 		return
 	}
 	user := db.User{}
-	if dbConn.Where("name=?", req.User_name).First(&user).RecordNotFound() {
+	if dbConn.Where("name = ?", req.User_name).First(&user).RecordNotFound() {
 		response := CreateResponse(404, "Your name is not found", nil)
 		c.JSON(http.StatusOK, response)
 		return
 	}
 	// send_messagesテーブルからuser_idが一致するレコードをSELECT
 	sendMessages := []db.SendMessage{}
-	if dbConn.Where("user_id=?", user.ID).Find(&sendMessages).RecordNotFound() {
+	dbConn.Where("user_id = ?", user.ID).Find(&sendMessages)
+	if len(sendMessages) == 0 {
 		response := CreateResponse(404, "Messages to you are not found", nil)
 		c.JSON(http.StatusOK, response)
 		return
@@ -67,7 +68,8 @@ func (ctrler Controller) GetMessage(c *gin.Context) {
 	}
 	// messagesテーブルからsendMessagesMessageIDs, ble.IDの一致するレコードをSELECT
 	messages := []db.Message{}
-	if dbConn.Where("ble_id=?", ble.ID).Find(&messages, sendMessagesMessageIDs).RecordNotFound() {
+	dbConn.Where("ble_id = ?", ble.ID).Find(&messages, sendMessagesMessageIDs)
+	if len(messages) == 0 {
 		response := CreateResponse(404, "Message to you with the BLE is not found", nil)
 		c.JSON(http.StatusOK, response)
 		return
