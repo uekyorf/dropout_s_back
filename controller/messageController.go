@@ -71,7 +71,8 @@ func (ctrler Controller) PostMessage(c *gin.Context) {
 	if req.To_all_users == true {
 		dbConn.Find(&toUser)
 	} else {
-		if dbConn.Where("name in (?)", req.To_user).Find(&toUser).RecordNotFound() {
+		dbConn.Where("name in (?)", req.To_user).Find(&toUser)
+		if len(toUser) == 0 {
 			response := CreateResponse(404, "to user is not found", nil)
 			c.JSON(http.StatusOK, response)
 			return
