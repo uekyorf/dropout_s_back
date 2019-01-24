@@ -44,3 +44,5 @@ go run main.go
 * https://github.com/EIMIKI/dropout_s_back/pull/30
 ### 全BLE取得
 * https://github.com/EIMIKI/dropout_s_back/pull/15
+### BLE取得
+* https://github.com/EIMIKI/dropout_s_back/pull/36
