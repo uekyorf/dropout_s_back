@@ -10,7 +10,7 @@ import (
 // Controller Controller全体で使いたいものを定義する
 type Controller struct {
 	conn *gorm.DB
-	mux  *sync.Mutex
+	mux  sync.Mutex
 }
 
 // NewController Controllerにいろいろ入れて返す
