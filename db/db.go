@@ -1,7 +1,6 @@
 package db
 
 import (
-	"dropout_s_back/config"
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -13,12 +12,8 @@ var err error
 
 // Init データベースの接続をする。
 func Init() {
-	dbConfig := config.GetDBConfig()
-	dbUser := dbConfig.User
-	dbPass := dbConfig.Pass
-	dbName := dbConfig.DBName
 
-	db, err = gorm.Open("mysql", dbUser+":"+dbPass+"@/"+dbName+"?charset=utf8&parseTime=True&loc=Local")
+	db, err = gorm.Open("mysql", "b56e5ef47c5c33:c07f2895@tcp(us-cdbr-iron-east-03.cleardb.net)/heroku_69b0c80d331b1b0?parseTime=true")
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -29,5 +24,6 @@ func Init() {
 
 // GetConn DBのコネクションを返す。
 func GetConn() *gorm.DB {
+	db.DB().SetMaxIdleConns(0)
 	return db
 }
